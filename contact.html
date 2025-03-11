@@ -38,24 +38,6 @@
         </form>
     </main>
 
-    <script>
-        document.getElementById("contact-form").addEventListener("submit", async function(event) {
-            event.preventDefault();
-        
-            let email = document.getElementById("email").value;
-            let message = document.getElementById("message").value;
-        
-            let response = await fetch("https://twoj-backend.vercel.app/send", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, message })
-            });
-        
-            let result = await response.json();
-            alert(result.message);
-        });
-    </script>
-
     <footer>
         <p>&copy; 2025 Eco premium. Wszelkie prawa zastrzeżone.</p>
     </footer>
