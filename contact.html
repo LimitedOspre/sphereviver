@@ -38,6 +38,52 @@
         </form>
     </main>
 
+    <script>
+        document.getElementById("contact-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+        
+            let email = document.getElementById("email").value;
+            let message = document.getElementById("message").value;
+            let newData = `E-mail: ${email}\nWiadomość: ${message}\n\n`;
+        
+            let githubUsername = "LimitedOspre";  // 🔹 Podaj swoją nazwę użytkownika GitHub
+            let repoName = "eoasad";         // 🔹 Podaj nazwę repozytorium
+            let filePath = "data.txt";     // 🔹 Ścieżka do pliku w repozytorium
+            let token = "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";       // 🔹 Podaj swój token GitHub
+        
+            let fileUrl = `https://api.github.com/repos/${githubUsername}/${repoName}/contents/${filePath}`;
+        
+            // Pobierz aktualną zawartość pliku
+            let response = await fetch(fileUrl, {
+                headers: { Authorization: `token ${token}` }
+            });
+        
+            let fileData = await response.json();
+            let currentContent = atob(fileData.content); // Dekodowanie base64
+            let updatedContent = btoa(currentContent + newData); // Dodanie nowej linii i kodowanie base64
+        
+            // Wyślij nową wersję pliku
+            let updateResponse = await fetch(fileUrl, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: "Dodano nową wiadomość",
+                    content: updatedContent,
+                    sha: fileData.sha
+                })
+            });
+        
+            if (updateResponse.ok) {
+                alert("Wiadomość zapisana w pliku na GitHub!");
+            } else {
+                alert("Błąd zapisu do pliku.");
+            }
+        });
+        </script>
+
     <footer>
         <p>&copy; 2025 Eco premium. Wszelkie prawa zastrzeżone.</p>
     </footer>
