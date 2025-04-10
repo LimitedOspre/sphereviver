@@ -67,12 +67,20 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      background-color: rgba(4, 24, 90, 0.3); /* przezroczystość */
+      background-color: rgba(4, 24, 90, 0.4); /* przezroczystość */
       color: rgb(96, 250, 255);
       text-align: center;
       padding: 2px;
       font-size: 0.9em;
       z-index: 2;
+    }
+    @media (max-width: 600px) {
+      #navbar {
+        justify-content: space-around;
+      }
+      #navbar button {
+        margin-left: 10px;
+      }
     }
   </style>
 </head>
