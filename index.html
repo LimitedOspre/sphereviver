@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Przeglądarka 360°</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        #navbar {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+
+            background: #3f4b72;
+            padding: 10px;
+            overflow-x: hidden;
+            white-space: nowrap;
+        }
+
+        #navbar button {
+            margin: 0 10px;
+            padding: 10px;
+            background: #253468;
+            color: rgb(0, 194, 220);
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            flex-shrink: 0;
+            /* Zapobiega zmniejszaniu przycisków */
+        }
+
+        #navbar button:hover {
+            background: #0e6180;
+        }
+
+        #viewer {
+            width: 100vw;
+            height: 95vh;;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #04185a5e;
+            color: rgb(10, 38, 121);
+            text-align: center;
+            padding: 0;
+        }
+
+        @media (max-width: 600px) {
+            #navbar {
+                flex-basis: 100%;
+                justify-content: flex-start;
+                overflow-x: hidden;
+            }
+
+            #navbar button {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar">
+        <button onclick="changeImage('ZD 5.jpg')">Wycieczka wspinaczkowa</button>
+        <button onclick="changeImage('ZD 3.jpg')">Salon taty dzień</button>
+        <button onclick="changeImage('ZD 2.jpg')">Salon taty noc</button>
+        <button onclick="changeImage('ZD 1.jpg')">kosmos AI</button>
+        <button onclick="changeImage('ZD 4.jpg')">Góry AI</button>
+    </div>
+    <div id="viewer"></div>
+
+    <script>
+        function initViewer(image) {
+            pannellum.viewer('viewer', {
+                type: 'equirectangular',
+                panorama: image,
+                autoLoad: true,
+                showControls: false,
+                hfov: 90
+            });
+        }
+        function changeImage(image) {
+            initViewer(image);
+        }
+        initViewer('ZD 5.jpg');
+        const navbar = document.getElementById('navbar');
+
+        let isDragging = false;
+        let startX, scrollLeft;
+
+        navbar.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            navbar.classList.add('dragging');
+            startX = e.pageX - navbar.offsetLeft;
+            scrollLeft = navbar.scrollLeft;
+        });
+
+        navbar.addEventListener('mouseleave', () => {
+            isDragging = false;
+            navbar.classList.remove('dragging');
+        });
+
+        navbar.addEventListener('mouseup', () => {
+            isDragging = false;
+            navbar.classList.remove('dragging');
+        });
+
+        navbar.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - navbar.offsetLeft;
+            const walk = (x - startX) * 1; // Prędkość przewijania
+            navbar.scrollLeft = scrollLeft - walk;
+        });
+    </script>
+</body>
+<footer>
+    <p>Zdięcia 360 2025</p>
+
+    <footer>
+
+</html>
