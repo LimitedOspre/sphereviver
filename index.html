@@ -100,30 +100,37 @@
         let isDragging = false;
         let startX, scrollLeft;
 
-        navbar.addEventListener('mousedown', (e) => {
+        function startDrag(x) {
             isDragging = true;
-            navbar.classList.add('dragging');
-            startX = e.pageX - navbar.offsetLeft;
+            startX = x - navbar.offsetLeft;
             scrollLeft = navbar.scrollLeft;
-        });
+        }
 
-        navbar.addEventListener('mouseleave', () => {
+        function stopDrag() {
             isDragging = false;
-            navbar.classList.remove('dragging');
-        });
+        }
 
-        navbar.addEventListener('mouseup', () => {
-            isDragging = false;
-            navbar.classList.remove('dragging');
-        });
-
-        navbar.addEventListener('mousemove', (e) => {
+        function drag(x) {
             if (!isDragging) return;
-            e.preventDefault();
-            const x = e.pageX - navbar.offsetLeft;
-            const walk = (x - startX) * 1; // Prędkość przewijania
+            const walk = (x - navbar.offsetLeft - startX) * 1;
             navbar.scrollLeft = scrollLeft - walk;
-        });
+        }
+
+        // Dla myszki
+        navbar.addEventListener('mousedown', (e) => startDrag(e.pageX));
+        navbar.addEventListener('mouseup', stopDrag);
+        navbar.addEventListener('mouseleave', stopDrag);
+        navbar.addEventListener('mousemove', (e) => drag(e.pageX));
+
+        // Dla dotyku
+        navbar.addEventListener('touchstart', (e) => startDrag(e.touches[0].pageX));
+        navbar.addEventListener('touchend', stopDrag);
+        navbar.addEventListener('touchcancel', stopDrag);
+        navbar.addEventListener('touchmove', (e) => {
+            drag(e.touches[0].pageX);
+            e.preventDefault(); // Zapobiega przewijaniu strony w pionie
+        }, { passive: false });
+        
     </script>
 </body>
 <footer>
