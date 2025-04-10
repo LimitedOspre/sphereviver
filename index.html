@@ -2,140 +2,151 @@
 <html lang="pl">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Przeglądarka 360°</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.css">
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Przeglądarka 360°</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.css" />
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: black;
+    }
 
-        #navbar {
-            align-items: center;
-            display: flex;
-            justify-content: center;
+    #viewer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
 
-            background: #3f4b72;
-            padding: 10px;
-            overflow-x: hidden;
-            white-space: nowrap;
-        }
+    #navbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      background: rgba(63, 75, 114);
+      padding: 10px;
+      overflow-x: auto;
+      white-space: nowrap;
+      z-index: 2;
+      scrollbar-width: none;
+    }
 
-        #navbar button {
-            margin: 0 10px;
-            padding: 10px;
-            background: #253468;
-            color: rgb(0, 194, 220);
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            flex-shrink: 0;
-            /* Zapobiega zmniejszaniu przycisków */
-        }
+    #navbar::-webkit-scrollbar {
+      display: none;
+    }
 
-        #navbar button:hover {
-            background: #0e6180;
-        }
+    #navbar button {
+      margin: 0 10px;
+      padding: 10px;
+      background: #253468;
+      color: rgb(0, 194, 220);
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
 
-        #viewer {
-            width: 100vw;
-            height: 95vh;;
-        }
+    #navbar button:hover {
+      background: #0e6180;
+    }
 
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: #04185a5e;
-            color: rgb(10, 38, 121);
-            text-align: center;
-            padding: 0;
-        }
-
-        @media (max-width: 600px) {
-            #navbar {
-                flex-basis: 100%;
-                justify-content: flex-start;
-                overflow-x: hidden;
-            }
-
-            #navbar button {
-                width: auto;
-            }
-        }
-    </style>
+    footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(4, 24, 90, 0.3); /* przezroczystość */
+      color: rgb(96, 250, 255);
+      text-align: center;
+      padding: 2px;
+      font-size: 0.9em;
+      z-index: 2;
+    }
+  </style>
 </head>
 
 <body>
-    <div id="navbar">
-        <button onclick="changeImage('ZD 5.jpg')">Wycieczka wspinaczkowa</button>
-        <button onclick="changeImage('ZD 3.jpg')">Salon taty dzień</button>
-        <button onclick="changeImage('ZD 2.jpg')">Salon taty noc</button>
-        <button onclick="changeImage('ZD 1.jpg')">kosmos AI</button>
-        <button onclick="changeImage('ZD 4.jpg')">Góry AI</button>
-    </div>
-    <div id="viewer"></div>
+  <div id="viewer"></div>
 
-    <script>
-        function initViewer(image) {
-            pannellum.viewer('viewer', {
-                type: 'equirectangular',
-                panorama: image,
-                autoLoad: true,
-                showControls: false,
-                hfov: 90
-            });
-        }
-        function changeImage(image) {
-            initViewer(image);
-        }
-        initViewer('ZD 5.jpg');
-        const navbar = document.getElementById('navbar');
+  <div id="navbar">
+    <button onclick="changeImage('ZD 5.jpg')">Wycieczka wspinaczkowa</button>
+    <button onclick="changeImage('ZD 3.jpg')">Salon taty dzień</button>
+    <button onclick="changeImage('ZD 2.jpg')">Salon taty noc</button>
+    <button onclick="changeImage('ZD 1.jpg')">kosmos AI</button>
+    <button onclick="changeImage('ZD 4.jpg')">Góry AI</button>
+  </div>
 
-        let isDragging = false;
-        let startX, scrollLeft;
+  <footer>
+    <p>Zdjęcia 360° 2025</p>
+  </footer>
 
-        function startDrag(x) {
-            isDragging = true;
-            startX = x - navbar.offsetLeft;
-            scrollLeft = navbar.scrollLeft;
-        }
+  <script>
+    function initViewer(image) {
+      pannellum.viewer("viewer", {
+        type: "equirectangular",
+        panorama: image,
+        autoLoad: true,
+        showControls: false,
+        hfov: 90,
+      });
+    }
 
-        function stopDrag() {
-            isDragging = false;
-        }
+    function changeImage(image) {
+      initViewer(image);
+    }
 
-        function drag(x) {
-            if (!isDragging) return;
-            const walk = (x - navbar.offsetLeft - startX) * 1;
-            navbar.scrollLeft = scrollLeft - walk;
-        }
+    initViewer("ZD 5.jpg");
 
-        // Dla myszki
-        navbar.addEventListener('mousedown', (e) => startDrag(e.pageX));
-        navbar.addEventListener('mouseup', stopDrag);
-        navbar.addEventListener('mouseleave', stopDrag);
-        navbar.addEventListener('mousemove', (e) => drag(e.pageX));
+    const navbar = document.getElementById("navbar");
+    let isDragging = false;
+    let startX, scrollLeft;
 
-        // Dla dotyku
-        navbar.addEventListener('touchstart', (e) => startDrag(e.touches[0].pageX));
-        navbar.addEventListener('touchend', stopDrag);
-        navbar.addEventListener('touchcancel', stopDrag);
-        navbar.addEventListener('touchmove', (e) => {
-            drag(e.touches[0].pageX);
-            e.preventDefault(); // Zapobiega przewijaniu strony w pionie
-        }, { passive: false });
-        
-    </script>
+    function startDrag(x) {
+      isDragging = true;
+      startX = x - navbar.offsetLeft;
+      scrollLeft = navbar.scrollLeft;
+    }
+
+    function stopDrag() {
+      isDragging = false;
+    }
+
+    function drag(x) {
+      if (!isDragging) return;
+      const walk = (x - navbar.offsetLeft - startX) * 1;
+      navbar.scrollLeft = scrollLeft - walk;
+    }
+
+    // Mysz
+    navbar.addEventListener("mousedown", (e) => startDrag(e.pageX));
+    navbar.addEventListener("mouseup", stopDrag);
+    navbar.addEventListener("mouseleave", stopDrag);
+    navbar.addEventListener("mousemove", (e) => drag(e.pageX));
+
+    // Dotyk
+    navbar.addEventListener("touchstart", (e) => startDrag(e.touches[0].pageX));
+    navbar.addEventListener("touchend", stopDrag);
+    navbar.addEventListener("touchcancel", stopDrag);
+    navbar.addEventListener(
+      "touchmove",
+      (e) => {
+        drag(e.touches[0].pageX);
+        e.preventDefault();
+      },
+      { passive: false }
+    );
+  </script>
 </body>
-<footer>
-    <p>Zdięcia 360 2025</p>
-
-    <footer>
 
 </html>
